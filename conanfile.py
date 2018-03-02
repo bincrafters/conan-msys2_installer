@@ -15,6 +15,7 @@ class MSYS2InstallerConan(ConanFile):
     license = "MSYS license"
     exports = ["LICENSE.md"]
     build_requires = "7z_installer/1.0@conan/stable"
+    short_paths = True
 
     if conan_version < Version("0.99"):
         settings = {
