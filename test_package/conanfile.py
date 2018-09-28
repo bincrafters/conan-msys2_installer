@@ -16,3 +16,5 @@ class TestPackage(ConanFile):
             raise ConanException("No instance of bash.exe could be found on %PATH%")
         
         self.run('bash.exe -c ^"make --version^"')
+        self.run('bash.exe -c ^"! test -f /bin/link^"')
+        self.run('bash.exe -c ^"! test -f /usr/bin/link^"')
