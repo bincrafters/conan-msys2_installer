@@ -16,6 +16,8 @@ class MSYS2InstallerConan(ConanFile):
     exports = ["LICENSE.md"]
     build_requires = "7z_installer/1.0@conan/stable"
     short_paths = True
+    options = {"exclude_files": "ANY"}  # Comma separated list of file patterns to exclude from the package
+    default_options = "exclude_files=*/link.exe"
 
     if conan_version < Version("0.99"):
         settings = {
@@ -65,11 +67,12 @@ class MSYS2InstallerConan(ConanFile):
         with open(tmp_name, 'a'):
             os.utime(tmp_name, None)
 
-
     def package(self):
         msys_dir = "msys64" if self.arch == "x86_64" else "msys32"
-        self.copy("*", dst=".", src=msys_dir)
-        
+        excludes = None
+        if self.options.exclude_files:
+            excludes = tuple(str(self.options.exclude_files).split(","))
+        self.copy("*", dst=".", src=msys_dir, excludes=excludes)
 
     def package_info(self):
         msys_root = self.package_folder
