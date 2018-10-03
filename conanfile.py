@@ -16,8 +16,12 @@ class MSYS2InstallerConan(ConanFile):
     exports = ["LICENSE.md"]
     build_requires = "7z_installer/1.0@conan/stable"
     short_paths = True
-    options = {"exclude_files": "ANY"}  # Comma separated list of file patterns to exclude from the package
-    default_options = "exclude_files=*/link.exe"
+    options = {"exclude_files": "ANY",  # Comma separated list of file patterns to exclude from the package
+               "packages": "ANY",  # Comma separated
+               "additional_packages": "ANY"}    # Comma separated
+    default_options = "exclude_files=*/link.exe", \
+                      "packages=base-devel", \
+                      "additional_packages=None"
 
     if conan_version < Version("0.99"):
         settings = {
@@ -54,9 +58,16 @@ class MSYS2InstallerConan(ConanFile):
         os.unlink(tar_name)
 
         msys_dir = "msys64" if self.arch == "x86_64" else "msys32"
-        
+
+        packages = []
+        if self.options.packages:
+            packages.extend(str(self.options.packages).split(","))
+        if self.options.additional_packages:
+            packages.extend(str(self.options.additional_packages).split(","))
+
         with tools.chdir(os.path.join(msys_dir, "usr", "bin")):
-            self.run('bash -l -c "pacman -S base-devel --noconfirm"')
+            for package in packages:
+                self.run('bash -l -c "pacman -S %s --noconfirm"' % package)
         
         # create /tmp dir in order to avoid
         # bash.exe: warning: could not find /tmp, please create!
