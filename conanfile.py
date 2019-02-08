@@ -20,7 +20,7 @@ class MSYS2InstallerConan(ConanFile):
                "packages": "ANY",  # Comma separated
                "additional_packages": "ANY"}    # Comma separated
     default_options = "exclude_files=*/link.exe", \
-                      "packages=base-devel", \
+                      "packages=base-devel,binutils,gcc", \
                       "additional_packages=None"
 
     if conan_version < Version("0.99"):
