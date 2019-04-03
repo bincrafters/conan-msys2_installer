@@ -66,6 +66,7 @@ class MSYS2InstallerConan(ConanFile):
             packages.extend(str(self.options.additional_packages).split(","))
 
         with tools.chdir(os.path.join(msys_dir, "usr", "bin")):
+            self.run('bash -l -c "pacman -Syy --noconfirm"')
             for package in packages:
                 self.run('bash -l -c "pacman -S %s --noconfirm"' % package)
         
